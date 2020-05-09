@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-im_name = 'a.PNG'
+
 def get_convex_hull(im_filename):
     im = cv2.imread(im_name)
 
@@ -23,5 +23,5 @@ def get_convex_hull(im_filename):
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-
-print(get_convex_hull(im_name))
+# im_name = 'a.PNG' 
+# print(get_convex_hull(im_name))
