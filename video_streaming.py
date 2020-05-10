@@ -1,5 +1,8 @@
 import numpy as np
 import cv2
+from alphabet_dictionary.hand_convex_hull import *
+from alphabet_dictionary.hand import *
+
 
 cap = cv2.VideoCapture(0)
 
@@ -33,19 +36,21 @@ while(True):
 
     converted = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
     skinMask = cv2.inRange(converted, lower, upper)
-    # apply a series of erosions and dilations to the mask
-    # using an elliptical kernel
+    
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
     skinMask = cv2.erode(skinMask, kernel, iterations = 2)
     skinMask = cv2.dilate(skinMask, kernel, iterations = 2)
-    # blur the mask to help remove noise, then apply the
-    # mask to the frame
+    
     skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
     skin = cv2.bitwise_and(crop_img, crop_img, mask = skinMask)
+
+    # print(skin)
+
+    user_hand = Hand(image = skin)
     
     # Display the resulting frame
     cv2.imshow('frame',frame)
-    cv2.imshow("cropped", crop_img)
+    # cv2.imshow("cropped", crop_img)
     cv2.imshow("skin", skin)
     
     # press q to stop video 
@@ -55,3 +60,4 @@ while(True):
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
+
