@@ -2,15 +2,17 @@ import numpy as np
 import cv2
 
 class Hand:
-    def __init__(self, file_name):
+    def __init__(self, file_name=None, image=None):
 
-        self.file_name = file_name
-        self.convex_hull_area = 0
+        if file_name:
+            self.file_name = file_name
+            im_name = self.file_name
+            self.image = cv2.imread(im_name)
+        if image:
+            self.image = image
+            
 
-        im_name = self.file_name
-        im = cv2.imread(im_name)
-
-        imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+        imgray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
         ret, thresh = cv2.threshold(imgray, 127, 255, 0)
         self.contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
@@ -32,14 +34,14 @@ class Hand:
 
 
     def show_hand_counter(self):
-        im_name = self.file_name
-        im = cv2.imread(im_name)
+        # im_name = self.file_name
+        # im = self.image
 
         # hand_counter = contours[hand_counter_index]
 
-        cv2.drawContours(im, [self.hand_counter], 0, (0,0,255), 3)
+        cv2.drawContours(self.image, [self.hand_counter], 0, (0,0,255), 3)
 
-        cv2.imshow('frame',im)
+        cv2.imshow('frame',self.image)
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -50,5 +52,5 @@ all_hand_pics = [f for f in glob.glob("*.PNG")] # based off of alphabet_dictiona
 
 for hand in all_hand_pics:
     im_name = hand
-    letter = Hand(im_name)
+    letter = Hand(file_name = im_name)
     letter.show_hand_counter()
