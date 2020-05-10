@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from alphabet_dictionary.hand_convex_hull import *
 from alphabet_dictionary.hand import *
+from app import *
 
 
 cap = cv2.VideoCapture(0)
@@ -47,6 +48,9 @@ while(True):
     # print(skin)
 
     user_hand = Hand(image = skin)
+    if user_hand.all_counter_hull_areas == 0:
+        cv2.putText(frame, 'Sign letter in the box', (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3, cv2.LINE_AA)
+    #letter = aslToEnglish(user_hand)
     
     # Display the resulting frame
     cv2.imshow('frame',frame)

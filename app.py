@@ -23,7 +23,6 @@ def true_dictionary():
 
         im_bw = cv2.cvtColor(al, cv2.COLOR_BGR2GRAY)
         (thr, bw) = cv2.threshold(im_bw, 127, 255, cv2.THRESH_BINARY)
-        #edges = cv2.Canny(im_bw, 100, 200)
         contours, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         hand = contours[0]
         hull = cv2.convexHull(hand)
@@ -112,28 +111,27 @@ def aslToEnglish(image):
     hand, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     hull = cv2.convexHull(hand[0])
     area = cv2.contourArea(hull)
-    ar = area * 4
+    #area = area * 4
 
-    # Narrow down the list until we get to 1
+    # Narrow down the list until we get to 1 by area/orientation/solidity
     similar = []
     for possible in targets:
         l = targets[possible]
         a = l[1]
-        diff = abs(ar - a)
+        diff = abs(area - a)
 
         if diff <= 5000:
             print(l[0])
             similar.append(possible)
 
-    #After we have similar, find similar shapes
+    #After we have all the letters with similar area make up, find similar shape
     if len(similar) == 1:
         l = targets[similar[0]][0]
         path = l[0].split('/')
         letter = path[1]
 
     else:
-        # Check shape
-        key = 0
+        # Check orientation
         x1, y1, w, h = cv2.boundingRect(hand[0])
         aspect = w / h
         #print(aspect)
@@ -155,11 +153,13 @@ def aslToEnglish(image):
                     similar.remove(possible)
         #print(similar)
 
+
     if len(similar) == 1:
         l = targets[similar[0]][0]
         path = l[0].split('/')
         letter = path[1]
     else:
+        # Check solidity -- how well the area covers its convex hull shape
         rArea = cv2.contourArea(hand[0])
         solidity = rArea / area
         print(solidity)
@@ -174,6 +174,8 @@ def aslToEnglish(image):
 
     return letter
 
+"""
+testing purposes
 if __name__ == '__main__':
 
     eng = aslToEnglish("IMG_0639.JPG")
@@ -184,3 +186,4 @@ if __name__ == '__main__':
 
     #listing1 = true_dictionary(alphabet_dictionary)
     #print("The letter you're looking for is: " + eng)
+"""
