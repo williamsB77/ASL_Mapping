@@ -58,7 +58,9 @@ while(True):
     cv2.imshow("skin", skin)
     
     # press q to stop video 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('y'): #save on pressing 'y' 
+        cv2.imwrite('user_image.PNG',skin)
+        cv2.destroyAllWindows()
         break
 
 # When everything done, release the capture
