@@ -111,7 +111,7 @@ def aslToEnglish(image):
     hand, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     hull = cv2.convexHull(hand[0])
     area = cv2.contourArea(hull)
-    #area = area * 4
+    area = area * 4
 
     # Narrow down the list until we get to 1 by area/orientation/solidity
     similar = []
@@ -121,7 +121,7 @@ def aslToEnglish(image):
         diff = abs(area - a)
 
         if diff <= 5000:
-            print(l[0])
+            #print(l[0])
             similar.append(possible)
 
     #After we have all the letters with similar area make up, find similar shape
@@ -144,7 +144,9 @@ def aslToEnglish(image):
         for possible in similar:
             l = targets[possible]
             x2, y2, w2, h2 = cv2.boundingRect(l[2])
+            #print(l[0])
             rat = w2 / h2
+            #print(rat)
             if key == 0:
                 if rat > .71:
                     similar.remove(possible)
@@ -172,10 +174,8 @@ def aslToEnglish(image):
             s = area / hArea
             print(s)
 
-    return letter
+    return similar
 
-"""
-testing purposes
 if __name__ == '__main__':
 
     eng = aslToEnglish("IMG_0639.JPG")
@@ -184,6 +184,6 @@ if __name__ == '__main__':
     #image = input()
     #eng = aslToEnglish(image)
 
-    #listing1 = true_dictionary(alphabet_dictionary)
+    #listing1 = true_dictionary()
+    #print(listing1)
     #print("The letter you're looking for is: " + eng)
-"""
