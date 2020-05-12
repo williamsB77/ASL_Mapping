@@ -11,7 +11,7 @@ import numpy
 def true_dictionary():
     targets = {}
     al_count = 0
-    folder = glob.glob("alphabet/*.PNG")
+    folder = glob.glob("alphabet_dictionary/*.PNG")
 
     for img in folder:
         al = cv2.imread(img)
@@ -37,7 +37,7 @@ def true_dictionary():
     return targets
 
 
-def aslToEnglish(image):
+def aslToEnglish(image, d):
     letter = 0
     # First, make a dictionary with the true images [letter, convex area]
     targets = true_dictionary()
@@ -52,8 +52,8 @@ def aslToEnglish(image):
     hand, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     hull = cv2.convexHull(hand[0])
     area = cv2.contourArea(hull)
-    area = area * 500
-    print(area)
+    area = area * d #30 - 10 (2957)
+    print("Hand hull area ", area)
 
     # Narrow down the list until we get to 1 by area/orientation/solidity
     similar = []
@@ -63,20 +63,22 @@ def aslToEnglish(image):
         diff = abs(area - a)
 
         if diff <= 3000:
-            #print(l[0])
+            print(l[1])
+            print("Area match is ", l[0])
             similar.append(possible)
 
     #After we have all the letters with similar area make up, find similar shape
     if len(similar) == 1:
-        l = targets[similar[0]][0]
-        path = l[0].split('/')
+        l = targets[similar[0]]
+        p = l[0]
+        path = p.split('/')
         letter = path[1]
 
     else:
         # Check orientation
         x1, y1, w, h = cv2.boundingRect(hand[0])
         aspect = w / h
-        print(aspect)
+        print("aspect ratio: ", aspect)
         if aspect < .71:
             key = 0
         else:
@@ -99,15 +101,16 @@ def aslToEnglish(image):
 
 
     if len(similar) == 1:
-        l = targets[similar[0]][0]
-        path = l[0].split('/')
+        l = targets[similar[0]]
+        p = l[0]
+        path = p.split('/')
         letter = path[1]
     else:
         # Check solidity -- how well the area covers its convex hull shape
         rArea = cv2.contourArea(hand[0])
-        rArea = rArea * 100
+        rArea = rArea * d
         solidity = rArea / area
-        print(solidity)
+        print("Solidity is ", solidity)
 
         closest = 1
         num = 26
@@ -128,16 +131,16 @@ def aslToEnglish(image):
             i = theImage.split('/')
             letter = i[1]
         else:
-            letter = "I'm sorry, we cannot recognize the image"
+            letter = -1
 
     return letter
 
 
 # Testing purposes
-#if __name__ == '__main__':
+if __name__ == '__main__':
 
-    #eng = aslToEnglish("user_image.PNG")
-    #print(eng)
+    eng = aslToEnglish("user_image.png", 85) #75
+    print(eng)
     #print("Input your letter:")
     #image = input()
     #eng = aslToEnglish(image)

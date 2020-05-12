@@ -31,11 +31,12 @@ class Hand:
             self.hand_counter = self.contours[hand_counter_index]
             self.hand_convex_hull = cv2.convexHull(self.hand_counter)
             self.hand_convex_hull_area = cv2.contourArea(self.hand_convex_hull)
+            cv2.drawContours(self.image, [self.hand_counter], 0, (0,0,255), 3)
         except:
             print("blank")
         
 
-        # cv2.drawContours(im, [self.hand_counter], 0, (0,0,255), 3)
+            #cv2.drawContours(self.image, [self.hand_counter], 0, (0,0,255), 3)
 
 
     def show_hand_counter(self):

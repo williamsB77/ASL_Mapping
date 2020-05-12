@@ -48,7 +48,8 @@ while(True):
     # print(skin)
 
     user_hand = Hand(image = skin)
-    cv2.putText(frame, 'Sign letter in the box', (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3, cv2.LINE_AA)
+    cv2.putText(frame, 'Sign letter in the green box', (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3, cv2.LINE_AA)
+    cv2.putText(frame, 'Take picture when contour is clear!', (48, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 255), 3, cv2.LINE_AA)
 
     # Display the resulting frame
     cv2.imshow('frame',frame)
@@ -67,10 +68,26 @@ gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 (thr, bw) = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)  # Black is foreground, white is background
 hand, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 area = cv2.contourArea(hand[0])
+print(area)
 
-if area > 1000:  # Check to make sure we've got a good picture!!
-    letter = aslToEnglish("user_image.png")
-    print("The letter you signed is " + letter)
+if area > 10000:
+    letter = aslToEnglish("user_image.png", 1)
+    if letter is not -1:
+        print("The letter you signed is " + letter)
+    else:
+        print("I'm sorry, we cannot recognize the image")
+elif area > 1000:
+    letter = aslToEnglish("user_image.png", 25)
+    if letter is not -1:
+        print("The letter you signed is " + letter)
+    else:
+        print("I'm sorry, we cannot recognize the image")
+elif area > 100:
+    letter = aslToEnglish("user_image.png", 85)
+    if letter is not -1:
+        print("The letter you signed is " + letter)
+    else:
+        print("I'm sorry, we cannot recognize the image")
 else:
     print("Take another picture!!")
 
