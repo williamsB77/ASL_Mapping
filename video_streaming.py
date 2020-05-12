@@ -48,10 +48,8 @@ while(True):
     # print(skin)
 
     user_hand = Hand(image = skin)
-    if user_hand.all_counter_hull_areas == 0:
-        cv2.putText(frame, 'Sign letter in the box', (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3, cv2.LINE_AA)
-    #letter = aslToEnglish(user_hand)
-    
+    cv2.putText(frame, 'Sign letter in the box', (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3, cv2.LINE_AA)
+
     # Display the resulting frame
     cv2.imshow('frame',frame)
     # cv2.imshow("cropped", crop_img)
@@ -59,9 +57,22 @@ while(True):
     
     # press q to stop video 
     if cv2.waitKey(1) & 0xFF == ord('y'): #save on pressing 'y' 
-        cv2.imwrite('user_image.PNG',skin)
+        cv2.imwrite('user_image.png',skin)
         cv2.destroyAllWindows()
         break
+
+im = cv2.imread("user_image.png")
+im = cv2.GaussianBlur(im, (5, 5), 0)
+gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+(thr, bw) = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)  # Black is foreground, white is background
+hand, hierarchy = cv2.findContours(bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+area = cv2.contourArea(hand[0])
+
+if area > 1000:  # Check to make sure we've got a good picture!!
+    letter = aslToEnglish("user_image.png")
+    print("The letter you signed is " + letter)
+else:
+    print("Take another picture!!")
 
 # When everything done, release the capture
 cap.release()
