@@ -34,9 +34,9 @@ class Hand:
 
             cv2.drawContours(self.image, [self.hand_counter], 0, (0,0,255), 3)
         except:
+            # print("blank")
             pass
         
-
         # cv2.drawContours(im, [self.hand_counter], 0, (0,0,255), 3)
 
 
@@ -48,13 +48,12 @@ class Hand:
 
         cv2.drawContours(self.image, [self.hand_counter], 0, (0,0,255), 3)
 
-        cv2.imshow('frame',self.image)
+        cv2.imshow('hand',self.image)
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-"""
-For testing purposes
+
 import glob
 all_hand_pics = [f for f in glob.glob("*.PNG")] # based off of alphabet_dictionary folder - make sure that you are pointing to it
 
@@ -62,5 +61,3 @@ for hand in all_hand_pics:
     im_name = hand
     letter = Hand(file_name = im_name)
     letter.show_hand_counter()
-
-"""
